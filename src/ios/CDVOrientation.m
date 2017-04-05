@@ -34,17 +34,22 @@
     NSInteger orientationMask = [[command argumentAtIndex:0] integerValue];
     CDVViewController* vc = (CDVViewController*)self.viewController;
     NSMutableArray* result = [[NSMutableArray alloc] init];
+    NSNumber *lockedOrienattionValue;
     
     if(orientationMask & 1) {
+        lockedOrienattionValue = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
         [result addObject:[NSNumber numberWithInt:UIInterfaceOrientationPortrait]];
     }
     if(orientationMask & 2) {
+        lockedOrienattionValue = [NSNumber numberWithInt:UIInterfaceOrientationPortraitUpsideDown];
         [result addObject:[NSNumber numberWithInt:UIInterfaceOrientationPortraitUpsideDown]];
     }
     if(orientationMask & 4) {
+        lockedOrienattionValue = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeLeft];
         [result addObject:[NSNumber numberWithInt:UIInterfaceOrientationLandscapeLeft]];
     }
     if(orientationMask & 8) {
+        lockedOrienattionValue = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
         [result addObject:[NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight]];
     }
     
@@ -60,6 +65,11 @@
     
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     
+    NSString * orienatationValue =  command.arguments[1];
+    if(![orienatationValue isEqualToString:@"any"]) {
+        [UIViewController attemptRotationToDeviceOrientation];
+        [[UIDevice currentDevice] setValue:lockedOrienattionValue forKey:@"orientation"];
+    }
 }
 
 @end
